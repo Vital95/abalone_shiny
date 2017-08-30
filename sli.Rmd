@@ -1,0 +1,101 @@
+---
+
+title: "Abalone dataset analysis"
+author: "Vital"
+date: "August 30, 2017"
+output: html_document
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(shiny)
+library(ggplot2)
+library(caret)
+library(C50)
+library(randomForest)
+abalone <- read.csv("abalone.csv")
+abalone <- abalone[,c(2:10)]
+listOfNames <- names(abalone)
+rest <- listOfNames[c(1,9)]
+listOfNames <- listOfNames[2:8]
+abaloneGood <- abalone
+```
+
+## Main idea:
+With this app you can investigate how lm, rf, gbm and c50 works using abalone dataset
+
+       -please choose any columns to add or remove
+       -you should use all genders to enter ML tab (classification task)
+       -plots will dynamically fit to your needs
+       -investigate how outliers affect lm line
+       -research how number of predictors builds an outcome
+       
+---
+       
+##LM  abalone relationship: number of rings as outcome with shell.wt as predictor
+
+```{r plot1,echo=FALSE}
+       
+       gg <- ggplot(abalone, aes(shell.wt, rings))
+       gg <- gg + geom_jitter(alpha=0.25)
+       gg <- gg + geom_smooth(method=loess, se=FALSE)
+       gg <- gg + facet_grid(. ~ sex)
+       gg
+
+```
+
+
+---
+
+
+## ML with only 2 predictors: length and diametter (rf)
+
+```{r plot2,echo=FALSE}
+       set.seed(998)
+       metric <- "Accuracy"
+       tmp <- abalone[,c(1,2,3,9)]
+       inTraining <- createDataPartition(tmp$sex, p = .75, list = FALSE)
+       training <- tmp[ inTraining,]
+       testing  <- tmp[-inTraining,]
+       fitControl <- trainControl(## 10-fold CV
+              method = "repeatedcv",
+              number = 5,
+              repeats = 3)
+       
+       rf <- train(sex ~ ., data = training, 
+                                  method="rf", 
+                                  trControl = fitControl,
+                                  verbose = FALSE,
+                                  metric = metric)
+       rf
+```
+
+
+---
+
+
+## Updating number of predictors and precision increases
+
+```{r plot3,echo=FALSE}
+       set.seed(777)
+       metric <- "Accuracy"
+       inTraining <- createDataPartition(abalone$sex, p = .75, list = FALSE)
+       training <- abalone[ inTraining,]
+       testing  <- abalone[-inTraining,]
+       fitControl <- trainControl(## 10-fold CV
+              method = "repeatedcv",
+              number = 5,
+              repeats = 3)
+       
+       rf <- train(sex ~ ., data = training, 
+                                  method="rf", 
+                                  trControl = fitControl,
+                                  verbose = FALSE,
+                                  metric = metric)
+       rf
+
+```
+
+
+

@@ -1,0 +1,10 @@
+name: app_2
+title:
+username:
+account: vital
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 209272
+bundleId: 961126
+url: https://vital.shinyapps.io/app_2/
+when: 1504127542.7938

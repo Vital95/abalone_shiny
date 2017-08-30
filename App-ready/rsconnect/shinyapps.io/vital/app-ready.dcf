@@ -1,0 +1,10 @@
+name: app-ready
+title:
+username:
+account: vital
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 209277
+bundleId: 961149
+url: https://vital.shinyapps.io/app-ready/
+when: 1504128363.97018
